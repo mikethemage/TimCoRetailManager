@@ -72,10 +72,9 @@ namespace TRMDesktopUI.Library.Api
                     _loggedInUser.CreatedDate = result.CreatedDate;
                     _loggedInUser.EmailAddress = result.EmailAddress;
                     _loggedInUser.FirstName = result.FirstName;
-                    _loggedInUser.LastName = result.LastName;
                     _loggedInUser.Id = result.Id;
-                    _loggedInUser.Token = result.Token;
-
+                    _loggedInUser.LastName = result.LastName;                    
+                    _loggedInUser.Token = token;
                 }
                 else
                 {
