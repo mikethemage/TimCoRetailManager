@@ -15,12 +15,14 @@ namespace TRMDesktopUI.ViewModels
     {
         private BindingList<ProductModel> _products;
         private IProductEndpoint _productEndpoint;
+        private ISaleEndpoint _saleEndpoint;
         private IConfigHelper _configHelper;
 
-        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
+        public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint)
         {
             _productEndpoint = productEndpoint;
             _configHelper = configHelper;
+            _saleEndpoint = saleEndpoint;
         }
 
         public async Task LoadProducts()
@@ -159,6 +161,7 @@ namespace TRMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
 
         public bool CanAddToCart
@@ -183,6 +186,7 @@ namespace TRMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => SubTotal);
             NotifyOfPropertyChange(() => Tax);
             NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
         }
 
         public bool CanRemoveFromCart
@@ -213,9 +217,21 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
-        public void CheckOut()
+        public async Task CheckOut()
         {
+            //Create a SaleModel and post to the API
+            SaleModel sale = new SaleModel();
 
+            foreach (var item in Cart)
+            {
+                sale.SaleDetails.Add(new SaleDetailModel
+                {
+                    ProductId = item.Product.Id,
+                    Quantity = item.QuantityInCart
+                });
+            }
+
+            await _saleEndpoint.PostSale(sale);
         }
 
         public bool CanCheckOut
@@ -225,7 +241,7 @@ namespace TRMDesktopUI.ViewModels
                 bool output = false;
 
                 //Make sure something is in cart
-                if (false)
+                if (Cart.Count > 0)
                 {
                     output = true;
                 }
