@@ -68,12 +68,21 @@ namespace TRMDataManager.Library.DataAccess
 
                     sql.CommitTransaction();
                 }
-                catch (Exception ex)
+                catch
                 {
                     sql.RollbackTransaction();
                     throw;
                 }
             }
+        }
+
+        public List<SaleReportModel> GetSaleReport()
+        {
+            SqlDataAccess sql = new SqlDataAccess();
+
+            var output = sql.LoadData<SaleReportModel, dynamic>("dbo.spSale_SaleReport", new { }, "TRMData");
+
+            return output;
         }
     }
 }

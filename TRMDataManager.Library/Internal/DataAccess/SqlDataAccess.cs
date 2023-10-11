@@ -100,6 +100,6 @@ namespace TRMDataManager.Library.Internal.DataAccess
 
             _transaction = null;
             _connection = null;
-        }
+        }        
     }
 }
