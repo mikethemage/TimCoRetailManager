@@ -223,6 +223,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202310120821003_CreateNewOnLaptop.cs" />
+    <Compile Include="Migrations\202310120821003_CreateNewOnLaptop.designer.cs">
+      <DependentUpon>202310120821003_CreateNewOnLaptop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -381,6 +386,11 @@
       <Project>{C943F63B-652A-49EE-8AF2-8BD1B1A329E4}</Project>
       <Name>TRMDataManager.Library</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\202310120821003_CreateNewOnLaptop.resx">
+      <DependentUpon>202310120821003_CreateNewOnLaptop.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
