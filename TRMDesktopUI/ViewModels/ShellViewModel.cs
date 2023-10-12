@@ -63,5 +63,10 @@ namespace TRMDesktopUI.ViewModels
             await ActivateItemAsync(_salesVM);
             NotifyOfPropertyChange(() => IsLoggedIn);
         }
+
+        public void UserManagement()
+        {
+            ActivateItemAsync(IoC.Get<UserDisplayViewModel>());
+        }
     }
 }
