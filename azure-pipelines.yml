@@ -39,7 +39,7 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: true
-    arguments: '-r linux-x64 "$(Build.ArtifactStagingDirectory)"'
+    arguments: '-r linux-x64 "TRMApi/TRMApi.csproj"'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish API'
