@@ -9,17 +9,21 @@ using TRMDataManager.Library.Models;
 
 namespace TRMDataManager.Library.DataAccess
 {
-    public class SaleData
+    public class SaleData : ISaleData
     {
-        private IConfiguration _config;
-        public SaleData(IConfiguration config)
+        private readonly IProductData _productData;
+        private readonly ISqlDataAccess _sql;
+
+        public SaleData(IProductData productData, ISqlDataAccess sql)
         {
-            _config = config;
+            _productData = productData;
+            _sql = sql;
         }
+
         public void SaveSale(SaleModel saleInfo, string cashierId)
         {
             List<SaleDetailDbModel> details = new List<SaleDetailDbModel>();
-            ProductData products = new ProductData(_config);
+
             var taxRate = ConfigHelper.GetTaxRate() / 100;
 
             foreach (var item in saleInfo.SaleDetails)
@@ -30,11 +34,11 @@ namespace TRMDataManager.Library.DataAccess
                     Quantity = item.Quantity
                 };
 
-                var productInfo = products.GetProductById(detail.ProductId);
+                var productInfo = _productData.GetProductById(detail.ProductId);
 
-                if(productInfo == null)
+                if (productInfo == null)
                 {
-                    throw new Exception($"The product Id of { detail.ProductId } could not be found in the database.");
+                    throw new Exception($"The product Id of {detail.ProductId} could not be found in the database.");
                 }
 
                 detail.PurchasePrice = (productInfo.RetailPrice * detail.Quantity);
@@ -49,44 +53,39 @@ namespace TRMDataManager.Library.DataAccess
 
             SaleDbModel sale = new SaleDbModel
             {
-                CashierId = cashierId,                
+                CashierId = cashierId,
                 SubTotal = details.Sum(x => x.PurchasePrice),
-                Tax = details.Sum(x => x.Tax),                
+                Tax = details.Sum(x => x.Tax),
             };
 
             sale.Total = sale.SubTotal + sale.Tax;
 
-            using (SqlDataAccess sql = new SqlDataAccess(_config))
+            try
             {
-                try
+                _sql.StartTransaction("TRMData");
+
+                _sql.SaveDataInTransaction("dbo.spSale_Insert", sale);
+
+                sale.Id = _sql.LoadDataInTransaction<int, dynamic>("dbo.spSale_Lookup", new { sale.CashierId, sale.SaleDate }).FirstOrDefault();
+
+                foreach (var item in details)
                 {
-                    sql.StartTransaction("TRMData");
-
-                    sql.SaveDataInTransaction("dbo.spSale_Insert", sale);
-
-                    sale.Id = sql.LoadDataInTransaction<int, dynamic>("dbo.spSale_Lookup", new { sale.CashierId, sale.SaleDate }).FirstOrDefault();
-
-                    foreach (var item in details)
-                    {
-                        item.SaleId = sale.Id;
-                        sql.SaveDataInTransaction("dbo.spSaleDetail_Insert", item);
-                    }
-
-                    sql.CommitTransaction();
+                    item.SaleId = sale.Id;
+                    _sql.SaveDataInTransaction("dbo.spSaleDetail_Insert", item);
                 }
-                catch
-                {
-                    sql.RollbackTransaction();
-                    throw;
-                }
+
+                _sql.CommitTransaction();
+            }
+            catch
+            {
+                _sql.RollbackTransaction();
+                throw;
             }
         }
 
         public List<SaleReportModel> GetSaleReport()
         {
-            SqlDataAccess sql = new SqlDataAccess(_config);
-
-            var output = sql.LoadData<SaleReportModel, dynamic>("dbo.spSale_SaleReport", new { }, "TRMData");
+            var output = _sql.LoadData<SaleReportModel, dynamic>("dbo.spSale_SaleReport", new { }, "TRMData");
 
             return output;
         }

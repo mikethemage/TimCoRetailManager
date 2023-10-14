@@ -12,19 +12,18 @@ namespace TRMApi.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class ProductController : ControllerBase
-    {
-        private readonly IConfiguration _config;
+    {        
+        private readonly IProductData _productData;
 
-        public ProductController(IConfiguration config)
-        {
-            _config = config;
+        public ProductController(IProductData productData)
+        {     
+            _productData = productData;
         }
 
         [HttpGet]
         public List<ProductModel> Get()
-        {
-            ProductData data = new ProductData(_config);
-            return data.GetProducts();
+        {            
+            return _productData.GetProducts();
         }
     }
 }

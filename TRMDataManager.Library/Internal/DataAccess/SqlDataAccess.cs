@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace TRMDataManager.Library.Internal.DataAccess
 {
-    internal class SqlDataAccess : IDisposable
+    public class SqlDataAccess : IDisposable, ISqlDataAccess
     {
 
-        public SqlDataAccess(IConfiguration config) 
-        { 
-            _config=config;
+        public SqlDataAccess(IConfiguration config)
+        {
+            _config = config;
         }
 
 
@@ -38,7 +38,7 @@ namespace TRMDataManager.Library.Internal.DataAccess
             }
         }
 
-        
+
 
         public void SaveData<T>(string storedProcedure, T parameters, string connectionStringName)
         {
@@ -103,7 +103,7 @@ namespace TRMDataManager.Library.Internal.DataAccess
                 {
                     CommitTransaction();
                 }
-                catch 
+                catch
                 {
                     // TODO - Log this issue
                 }
@@ -111,6 +111,6 @@ namespace TRMDataManager.Library.Internal.DataAccess
 
             _transaction = null;
             _connection = null;
-        }        
+        }
     }
 }
