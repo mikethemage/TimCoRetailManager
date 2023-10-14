@@ -15,11 +15,11 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-#- task: NuGetToolInstaller@1
+- task: NuGetToolInstaller@1
 
-# - task: NuGetCommand@2
-#   inputs:
-#     restoreSolution: '$(solution)'    
+ - task: NuGetCommand@2
+   inputs:
+     restoreSolution: '$(solution)'    
 
 - task: DotNetCoreCLI@2
   inputs:
@@ -39,7 +39,7 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: true
-    arguments: '-r linux-x64 "TRMApi/TRMApi.csproj"'
+    arguments: '-r linux-x64 --output $(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish API'
