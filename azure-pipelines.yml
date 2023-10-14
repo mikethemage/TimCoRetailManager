@@ -15,19 +15,31 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- task: NuGetToolInstaller@1
+#- task: NuGetToolInstaller@1
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
+# - task: NuGetCommand@2
+#   inputs:
+#     restoreSolution: '$(solution)'
 
-- task: VSBuild@1
-  displayName: 'Build API Project'
+- task: DotNetCoreCLI@2
   inputs:
-    solution: 'TRMApi/TRMApi.csproj'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: 'restore'
+    projects: '$(solution)'
+    feedsToUse: 'select'
+
+# - task: VSBuild@1
+#   displayName: 'Build API Project'
+#   inputs:
+#     solution: 'TRMApi/TRMApi.csproj'
+#     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+#     platform: '$(buildPlatform)'
+#     configuration: '$(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '-r linux-x64 --output $(Build.ArtifactStagingDirectory)'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish API'
