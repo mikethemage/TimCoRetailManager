@@ -21,13 +21,19 @@ steps:
   inputs:
     restoreSolution: '$(solution)'
 
-- task: VSBuild@1
-  displayName: 'Build API Project'
+# - task: VSBuild@1
+#   displayName: 'Build API Project'
+#   inputs:
+#     solution: 'TRMApi/TRMApi.csproj'
+#     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+#     platform: '$(buildPlatform)'
+#     configuration: '$(buildConfiguration)'
+
+- task: DotNetCoreCLI@2
   inputs:
-    solution: 'TRMApi/TRMApi.csproj'
-    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: 'publish'
+    publishWebProjects: true
+    arguments: '-r linux-x64 "$(Build.ArtifactStagingDirectory)"'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish API'
