@@ -46,7 +46,7 @@ steps:
   displayName: 'Build SQL Project'
   inputs:
     solution: 'TRMData/TRMData.sqlproj'
-    msbuildArgs: '/p:PackageLocation="$(build.artifactStagingDirectory)\\" /property:DSP="Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider"'
+    msbuildArgs: '/p:OutDir="$(build.artifactStagingDirectory)\\" /property:DSP="Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     
@@ -67,7 +67,7 @@ steps:
   displayName: 'Build WPF Project'
   inputs:
     solution: 'TRMDesktopUI/TRMDesktopUI.csproj'
-    msbuildArgs: '/p:PackageLocation="$(build.artifactStagingDirectory)"'
+    msbuildArgs: '/p:OutDir="$(build.artifactStagingDirectory)"'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
