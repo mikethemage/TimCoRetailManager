@@ -75,19 +75,47 @@ steps:
     SourceFolder: '$(Build.ArtifactStagingDirectory)'
     Contents: '**'
 
-- task: VSBuild@1
-  displayName: 'Build WPF Project'
+- task: DotNetCoreCLI@2
   inputs:
-    solution: 'TRMDesktopUI/TRMDesktopUI.csproj'
-    msbuildArgs: '/p:OutDir="$(build.artifactStagingDirectory)"'
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: 'publish'
+    publishWebProjects: false
+    projects: 'TRMDesktopUI/TRMDesktopUI.csproj'
+    arguments: '-p:PublishSingleFile=true --runtime win-x64 --self-contained true --output $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: false
+
+# - task: VSBuild@1
+#   displayName: 'Build WPF Project'
+#   inputs:
+#     solution: 'TRMDesktopUI/TRMDesktopUI.csproj'
+#     msbuildArgs: '/p:OutDir="$(build.artifactStagingDirectory)"'
+#     platform: '$(buildPlatform)'
+#     configuration: '$(buildConfiguration)'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish WPF'
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'WpfDrop'
+    publishLocation: 'Container'
+
+- task: DeleteFiles@1
+  displayName: 'Delete WPF files'
+  inputs:
+    SourceFolder: '$(Build.ArtifactStagingDirectory)'
+    Contents: '**'
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      dotnet tool install --global dotnet-ef
+      dotnet ef migrations script -i -o $(Build.ArtifactStagingDirectory)/migrate.sql -p TRMApi/TRMApi.csproj
+      echo Hello world
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish AuthDB Script'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'AuthDBDrop'
     publishLocation: 'Container'
 
 # - task: VSTest@2
