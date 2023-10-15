@@ -94,6 +94,7 @@ steps:
     actionOnMissing: 'warn'
     keepToken: false
     actionOnNoFiles: 'continue'
+    inlineVariables: 'api'
     enableTransforms: false
     enableRecursion: false
     useLegacyPattern: false
