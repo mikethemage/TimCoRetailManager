@@ -90,6 +90,26 @@ steps:
     ArtifactName: 'WpfDrop'
     publishLocation: 'Container'
 
+- task: DeleteFiles@1
+  displayName: 'Delete WPF files'
+  inputs:
+    SourceFolder: '$(Build.ArtifactStagingDirectory)'
+    Contents: '**'
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      dotnet tool install --global dotnet-ef
+      dotnet ef migrations script -i -o $(Build.ArtifactStagingDirectory)/migrate.sql -p TRMApi/TRMApi.csproj
+      echo Hello world
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish AuthDB Script'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'AuthDBDrop'
+    publishLocation: 'Container'
+
 # - task: VSTest@2
 #   inputs:
 #     platform: '$(buildPlatform)'
