@@ -13,7 +13,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  api: 'https://md84-timcoapi.azurewebsites.net'
+  api: 'https://md84-timcoapi.azurewebsites.net/1'
 
 steps:
 #- task: NuGetToolInstaller@1
@@ -88,6 +88,7 @@ steps:
 - task: replacetokens@5
   displayName: 'Replace tokens in json'
   inputs:
+    rootDirectory: '$(Build.ArtifactStagingDirectory)'
     targetFiles: '**/*.json'
     encoding: 'auto'
     tokenPattern: 'default'
@@ -99,14 +100,6 @@ steps:
     enableRecursion: false
     useLegacyPattern: false
     enableTelemetry: true
-
-# - task: VSBuild@1
-#   displayName: 'Build WPF Project'
-#   inputs:
-#     solution: 'TRMDesktopUI/TRMDesktopUI.csproj'
-#     msbuildArgs: '/p:OutDir="$(build.artifactStagingDirectory)"'
-#     platform: '$(buildPlatform)'
-#     configuration: '$(buildConfiguration)'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish WPF'
