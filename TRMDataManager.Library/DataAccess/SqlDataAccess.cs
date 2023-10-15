@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TRMDataManager.Library.Internal.DataAccess
+namespace TRMDataManager.Library.DataAccess
 {
     public class SqlDataAccess : IDisposable, ISqlDataAccess
     {

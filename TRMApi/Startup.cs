@@ -17,7 +17,6 @@ using TRMApi.Data;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using TRMDataManager.Library.DataAccess;
-using TRMDataManager.Library.Internal.DataAccess;
 
 namespace TRMApi
 {
