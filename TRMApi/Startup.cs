@@ -48,6 +48,7 @@ namespace TRMApi
             services.AddTransient<IUserData, UserData>();
             services.AddTransient<ISqlDataAccess, SqlDataAccess>();
 
+            services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddAuthentication(options =>
             {
@@ -84,7 +85,8 @@ namespace TRMApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.UseDeveloperExceptionPage();
+                app.UseMigrationsEndPoint();
             }
             else
             {
