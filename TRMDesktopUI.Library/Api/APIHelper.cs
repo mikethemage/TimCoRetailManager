@@ -8,25 +8,28 @@ using System.Net.Http.Headers;
 using System.Configuration;
 using TRMDesktopUI.Library.Models;
 using TRMDataDesktopUI.Library.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace TRMDesktopUI.Library.Api
 {
     public class APIHelper : IAPIHelper
     {
         private HttpClient _apiClient;
-        private ILoggedInUserModel _loggedInUser;        
+        private ILoggedInUserModel _loggedInUser;
+        private readonly IConfiguration _config;
 
-        public APIHelper(ILoggedInUserModel loggedInUser)
-        {
+        public APIHelper(ILoggedInUserModel loggedInUser, IConfiguration config)
+        {            
+            _loggedInUser = loggedInUser;
+            _config = config;
             InitializeClient();
-            _loggedInUser = loggedInUser;            
         }
 
         public HttpClient ApiClient { get { return _apiClient; } }
 
         private void InitializeClient()
         {
-            string api = ConfigurationManager.AppSettings["api"];
+            string api = _config.GetValue<string>("api");
 
             _apiClient = new HttpClient();
             _apiClient.BaseAddress = new Uri(api);
