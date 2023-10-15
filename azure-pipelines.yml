@@ -16,27 +16,15 @@ variables:
   api: 'https://md84-timcoapi.azurewebsites.net'
 
 steps:
-#- task: NuGetToolInstaller@1
-
-# - task: NuGetCommand@2
-#   inputs:
-#     restoreSolution: '$(solution)'
-
 - task: DotNetCoreCLI@2
+  displayName: 'DotNet Restore'
   inputs:
     command: 'restore'
     projects: '$(solution)'
     feedsToUse: 'select'
 
-# - task: VSBuild@1
-#   displayName: 'Build API Project'
-#   inputs:
-#     solution: 'TRMApi/TRMApi.csproj'
-#     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
-#     platform: '$(buildPlatform)'
-#     configuration: '$(buildConfiguration)'
-
 - task: DotNetCoreCLI@2
+  displayName: 'Build API Project'
   inputs:
     command: 'publish'
     publishWebProjects: true
@@ -115,6 +103,7 @@ steps:
     Contents: '**'
 
 - task: CmdLine@2
+  displayName: 'Create AuthDB Migrations'
   inputs:
     script: |
       dotnet tool install --global dotnet-ef
@@ -132,5 +121,3 @@ steps:
 #   inputs:
 #     platform: '$(buildPlatform)'
 #     configuration: '$(buildConfiguration)'
-
-
