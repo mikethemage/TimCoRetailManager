@@ -84,6 +84,21 @@ steps:
     arguments: '-p:PublishSingleFile=true --runtime win-x64 --self-contained true --output $(Build.ArtifactStagingDirectory) -c Release'
     zipAfterPublish: false
 
+- task: replacetokens@5
+  displayName: 'Replace tokens in json'
+  inputs:
+    targetFiles: '**/*.json'
+    encoding: 'auto'
+    tokenPattern: 'default'
+    writeBOM: true
+    actionOnMissing: 'warn'
+    keepToken: false
+    actionOnNoFiles: 'continue'
+    enableTransforms: false
+    enableRecursion: false
+    useLegacyPattern: false
+    enableTelemetry: true
+
 # - task: VSBuild@1
 #   displayName: 'Build WPF Project'
 #   inputs:
