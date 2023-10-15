@@ -13,6 +13,7 @@ variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
+  api: 'https://md84-timcoapi.azurewebsites.net'
 
 steps:
 #- task: NuGetToolInstaller@1
