@@ -18,12 +18,12 @@ namespace TRMDesktopUI.ViewModels
     public class SalesViewModel : Screen
     {
         private BindingList<ProductDisplayModel> _products;
-        private IProductEndpoint _productEndpoint;
+        private readonly IProductEndpoint _productEndpoint;
         private readonly IConfiguration _config;
-        private ISaleEndpoint _saleEndpoint;        
-        private IMapper _mapper;
-        private StatusInfoViewModel _status;
-        private IWindowManager _window;
+        private readonly ISaleEndpoint _saleEndpoint;        
+        private readonly IMapper _mapper;
+        private readonly StatusInfoViewModel _status;
+        private readonly IWindowManager _window;
 
         public SalesViewModel(IProductEndpoint productEndpoint, IConfiguration config, ISaleEndpoint saleEndpoint, IMapper mapper,
             StatusInfoViewModel status, IWindowManager window)

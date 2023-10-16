@@ -33,7 +33,7 @@ namespace TRMDataManager.Library.DataAccess
                 throw new Exception("The tax rate is not set up properly.");
             }
 
-            output = output / 100;
+            output /= 100;
 
             return output;
         }

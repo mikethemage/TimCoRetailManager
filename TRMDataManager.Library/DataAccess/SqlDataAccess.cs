@@ -55,8 +55,8 @@ namespace TRMDataManager.Library.DataAccess
 
         private IDbConnection _connection;
         private IDbTransaction _transaction;
-        private bool isClosed = false;
-        private IConfiguration _config;
+        private bool _isClosed = false;
+        private readonly IConfiguration _config;
         private readonly ILogger<SqlDataAccess> _logger;
 
         public void StartTransaction(string connectionStringName)
@@ -67,7 +67,7 @@ namespace TRMDataManager.Library.DataAccess
 
             _transaction = _connection.BeginTransaction();
 
-            isClosed = false;
+            _isClosed = false;
         }
 
         public void SaveDataInTransaction<T>(string storedProcedure, T parameters)
@@ -87,7 +87,7 @@ namespace TRMDataManager.Library.DataAccess
             _transaction?.Commit();
             _connection?.Close();
 
-            isClosed = true;
+            _isClosed = true;
         }
 
         public void RollbackTransaction()
@@ -95,12 +95,12 @@ namespace TRMDataManager.Library.DataAccess
             _transaction?.Rollback();
             _connection?.Close();
 
-            isClosed = true;
+            _isClosed = true;
         }
 
         public void Dispose()
         {
-            if (isClosed == false)
+            if (_isClosed == false)
             {
                 try
                 {

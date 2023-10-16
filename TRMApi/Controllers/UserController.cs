@@ -88,7 +88,7 @@ namespace TRMApi.Controllers
         public async Task AddARole(UserRolePairModel pairing)
         {
             string loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var loggedInUser = _userData.GetUserById(loggedInUserId).First();
+            //var loggedInUser = _userData.GetUserById(loggedInUserId).First();
             var user = await _userManager.FindByIdAsync(pairing.UserId);
 
             _logger.LogInformation("Admin {Admin} added user {User} to role {Role}", 
@@ -104,7 +104,7 @@ namespace TRMApi.Controllers
         public async Task RemoveARole(UserRolePairModel pairing)
         {
             string loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var loggedInUser = _userData.GetUserById(loggedInUserId).First();
+            //var loggedInUser = _userData.GetUserById(loggedInUserId).First();
             var user = await _userManager.FindByIdAsync(pairing.UserId);
 
             _logger.LogInformation("Admin {Admin} removed user {User} from role {Role}",

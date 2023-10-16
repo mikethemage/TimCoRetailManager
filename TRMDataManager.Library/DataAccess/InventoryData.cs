@@ -9,13 +9,11 @@ using TRMDataManager.Library.Models;
 namespace TRMDataManager.Library.DataAccess
 {
     public class InventoryData : IInventoryData
-    {
-        private IConfiguration _config;
+    {        
         private readonly ISqlDataAccess _sql;
 
-        public InventoryData(IConfiguration config, ISqlDataAccess sql)
-        {
-            _config = config;
+        public InventoryData(ISqlDataAccess sql)
+        {     
             _sql = sql;
         }
 
