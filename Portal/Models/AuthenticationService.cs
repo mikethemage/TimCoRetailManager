@@ -47,7 +47,7 @@ public class AuthenticationService : IAuthenticationService
 
         await _localStorage.SetItemAsync(authTokenStorageKey, result.Access_Token);
 
-        ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(result.Access_Token);
+        await ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(result.Access_Token);
 
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Access_Token);
 
