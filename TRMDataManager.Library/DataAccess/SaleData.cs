@@ -40,7 +40,7 @@ namespace TRMDataManager.Library.DataAccess
 
         public void SaveSale(SaleModel saleInfo, string cashierId)
         {
-            List<SaleDetailDbModel> details = new List<SaleDetailDbModel>();
+            List<SaleDetailDbModel> details = new();
 
             var taxRate = GetTaxRate();
 
@@ -69,7 +69,7 @@ namespace TRMDataManager.Library.DataAccess
                 details.Add(detail);
             }
 
-            SaleDbModel sale = new SaleDbModel
+            SaleDbModel sale = new()
             {
                 CashierId = cashierId,
                 SubTotal = details.Sum(x => x.PurchasePrice),

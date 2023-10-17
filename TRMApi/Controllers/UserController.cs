@@ -41,12 +41,58 @@ namespace TRMApi.Controllers
             return _userData.GetUserById(userId).First();
         }
 
+        public record UserRegistrationModel(string FirstName, string LastName, string EmailAddress, string Password);
+
+        [HttpPost]
+        [Route("Register")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register(UserRegistrationModel user)
+        {
+            if (ModelState.IsValid)
+            {
+                var existingUser = await _userManager.FindByEmailAsync(user.EmailAddress);
+                if (existingUser is null)
+                {
+                    IdentityUser newUser = new()
+                    {
+                        Email = user.EmailAddress,
+                        EmailConfirmed = true,
+                        UserName = user.EmailAddress
+                    };
+
+                    IdentityResult result = await _userManager.CreateAsync(newUser, user.Password);
+
+                    if (result.Succeeded)
+                    {
+                        existingUser = await _userManager.FindByEmailAsync(user.EmailAddress);
+                        if (existingUser is null)
+                        {
+                            return BadRequest();
+                        }
+
+                        UserModel u = new()
+                        {
+                            Id =existingUser.Id,
+                            FirstName = user.FirstName,
+                            LastName = user.LastName,
+                            EmailAddress = user.EmailAddress
+                        };
+
+                        _userData.CreateUser(u);
+                        return Ok();
+                    }
+                }
+            }
+
+            return BadRequest();
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpGet]
         [Route("Admin/GetAllUsers")]
         public List<ApplicationUserModel> GetAllUsers()
         {
-            List<ApplicationUserModel> output = new List<ApplicationUserModel>();
+            List<ApplicationUserModel> output = new();
 
             var users = _context.Users.ToList();
             var userRoles = from ur in _context.UserRoles
@@ -57,13 +103,13 @@ namespace TRMApi.Controllers
 
             foreach (var user in users)
             {
-                ApplicationUserModel u = new ApplicationUserModel
+                ApplicationUserModel u = new()
                 {
                     Id = user.Id,
                     Email = user.Email
                 };
 
-                u.Roles = userRoles.Where(x => x.UserId == u.Id).ToDictionary(key => key.RoleId, val => val.Name);                
+                u.Roles = userRoles.Where(x => x.UserId == u.Id).ToDictionary(key => key.RoleId, val => val.Name);
 
                 output.Add(u);
             }
@@ -91,9 +137,9 @@ namespace TRMApi.Controllers
             //var loggedInUser = _userData.GetUserById(loggedInUserId).First();
             var user = await _userManager.FindByIdAsync(pairing.UserId);
 
-            _logger.LogInformation("Admin {Admin} added user {User} to role {Role}", 
+            _logger.LogInformation("Admin {Admin} added user {User} to role {Role}",
                 loggedInUserId, user.Id, pairing.RoleName);
-            
+
             await _userManager.AddToRoleAsync(user, pairing.RoleName);
         }
 
@@ -108,10 +154,10 @@ namespace TRMApi.Controllers
             var user = await _userManager.FindByIdAsync(pairing.UserId);
 
             _logger.LogInformation("Admin {Admin} removed user {User} from role {Role}",
-                loggedInUserId, user.Id, pairing.RoleName);            
+                loggedInUserId, user.Id, pairing.RoleName);
 
             await _userManager.RemoveFromRoleAsync(user, pairing.RoleName);
-            
+
         }
     }
 }

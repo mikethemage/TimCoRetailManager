@@ -12,13 +12,12 @@ namespace TRMApi.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
-        {
-            _logger = logger;
+        public HomeController(RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        {            
             _roleManager = roleManager;
             _userManager = userManager;
         }

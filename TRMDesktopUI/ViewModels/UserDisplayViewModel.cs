@@ -49,7 +49,7 @@ namespace TRMDesktopUI.ViewModels
                 _selectedUser = value;
                 SelectedUserName = value.Email;
                 UserRoles = new BindingList<string>(value.Roles.Select(x => x.Value).ToList());
-                LoadRoles();
+                LoadRoles().Wait();
                 NotifyOfPropertyChange(() => SelectedUser);
                 NotifyOfPropertyChange(() => CanAddSelectedRole);
                 NotifyOfPropertyChange(() => CanRemoveSelectedRole);
@@ -68,7 +68,7 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
-        private BindingList<string> _userRoles = new BindingList<string>();
+        private BindingList<string> _userRoles = new();
 
         public BindingList<string> UserRoles
         {
@@ -80,7 +80,7 @@ namespace TRMDesktopUI.ViewModels
             }
         }
 
-        private BindingList<string> _availableRoles = new BindingList<string>();
+        private BindingList<string> _availableRoles = new();
 
         public BindingList<string> AvailableRoles
         {

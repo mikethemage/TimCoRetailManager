@@ -12,7 +12,7 @@ public class AuthenticationService : IAuthenticationService
     private readonly AuthenticationStateProvider _authStateProvider;
     private readonly ILocalStorageService _localStorage;
     private readonly IConfiguration _config;
-    private string authTokenStorageKey;
+    private readonly string authTokenStorageKey;
 
     public AuthenticationService(HttpClient client,
                                  AuthenticationStateProvider authStateProvider,
@@ -34,7 +34,7 @@ public class AuthenticationService : IAuthenticationService
             new KeyValuePair<string, string>("password", userForAuthentication.Password)
         });
 
-        string api = _config["apiLocation"] + _config["tokenEndpoint"];
+        string api = _config["api"] + _config["tokenEndpoint"];
         var authResult = await _client.PostAsync(api, data);
         var authContent = await authResult.Content.ReadAsStringAsync();
 
