@@ -33,13 +33,21 @@ public class AuthStateProvider : AuthenticationStateProvider
             return _anonymous;
         }
 
+        bool isAuthenticated = await NotifyUserAuthentication(token);
+
+        if ( isAuthenticated == false )
+        {
+            return _anonymous;
+        }
+
         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
 
         return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(JwtParser.ParseClaimsFromJwt(token), "jwtAuthType")));
     }
 
-    public async Task NotifyUserAuthentication(string token)
+    public async Task<bool> NotifyUserAuthentication(string token)
     {
+        bool isAuthenticatedOutput = false;
         Task<AuthenticationState> authState;
         try
         {
@@ -48,22 +56,25 @@ public class AuthStateProvider : AuthenticationStateProvider
                 new ClaimsIdentity(JwtParser.ParseClaimsFromJwt(token),
                 "jwtAuthType"));
             authState = Task.FromResult(new AuthenticationState(authenticatedUser));
+            NotifyAuthenticationStateChanged(authState);
+            isAuthenticatedOutput = true;
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
-            string authTokenStorageKey = _config["authTokenStorageKey"];
-            await _localStorage.RemoveItemAsync(authTokenStorageKey);
-            authState = Task.FromResult(_anonymous);
+            Console.WriteLine(ex);            
+            await NotifyUserLogout();
         }
         
-        NotifyAuthenticationStateChanged(authState);
+        return isAuthenticatedOutput;
     }
 
-    public void NotifyUserLogout()
+    public async Task NotifyUserLogout()
     {
+        string authTokenStorageKey = _config["authTokenStorageKey"];
+        await _localStorage.RemoveItemAsync(authTokenStorageKey);
         var authState = Task.FromResult(_anonymous);
         _apiHelper.LogOffUser();
+        _httpClient.DefaultRequestHeaders.Authorization = null;
         NotifyAuthenticationStateChanged(authState);
     }
 }

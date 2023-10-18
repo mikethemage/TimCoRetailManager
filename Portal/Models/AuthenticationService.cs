@@ -55,9 +55,7 @@ public class AuthenticationService : IAuthenticationService
     }
 
     public async Task Logout()
-    {
-        await _localStorage.RemoveItemAsync(authTokenStorageKey);
-        ((AuthStateProvider)_authStateProvider).NotifyUserLogout();
-        _client.DefaultRequestHeaders.Authorization = null;
+    {        
+        await ((AuthStateProvider)_authStateProvider).NotifyUserLogout();        
     }
 }
