@@ -52,6 +52,15 @@ public class AuthStateProvider : AuthenticationStateProvider
         try
         {
             await _apiHelper.GetLoggedInUserInfo(token);
+        }
+        catch (Exception ex)
+        {
+
+            Console.WriteLine(ex.Message);
+        }
+        try
+        {
+            
             var authenticatedUser = new ClaimsPrincipal(
                 new ClaimsIdentity(JwtParser.ParseClaimsFromJwt(token),
                 "jwtAuthType"));
